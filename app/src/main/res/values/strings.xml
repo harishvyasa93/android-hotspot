@@ -5,6 +5,8 @@
     <string name="text_turn_hotspot_off">Turn Off</string>
     <string name="text_settings_permission">Write Settings permission</string>
     <string name="text_settings_permission_description">This is an attempt to modify system settings. Please provide WRITE Settings permission to proceed.</string>
-    <string name="text_ok">Ok</string>
+    <string name="text_ok">OK</string>
     <string name="text_cancel">Cancel</string>
+    <string name="text_hint_ssid">SSID</string>
+    <string name="text_hint_password">Password</string>
 </resources>

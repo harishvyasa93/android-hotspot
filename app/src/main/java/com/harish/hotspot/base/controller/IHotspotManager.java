@@ -1,6 +1,7 @@
 package com.harish.hotspot.base.controller;
 
 import android.content.Context;
+import android.net.wifi.WifiConfiguration;
 
 import com.harish.hotspot.base.interfaces.IHotspotStateListener;
 
@@ -15,13 +16,17 @@ public interface IHotspotManager {
 
     void disableHotspot(Context context);
 
-    void setHotspotState(int mHotspotState);
-
     int getHotspotState();
+
+    void setHotspotState(int mHotspotState);
 
     void setHotspotStateListener(Context context, IHotspotStateListener mHotspotStateListener);
 
     IHotspotStateListener getHotspotStateListener();
 
     void removeHotspotStateListener(Context context);
+
+    WifiConfiguration getHotspotConfiguration(Context context);
+
+    void setWifiConfiguration(Context context, WifiConfiguration wifiConfiguration);
 }

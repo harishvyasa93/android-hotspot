@@ -47,16 +47,26 @@ public final class HotspotHelper {
 
     /**
      * Helper method to enable hotspot.
+     * Goes with default/pre-existing {@link WifiConfiguration}.
      */
     public static void enableHotspot(WifiManager wifiManager) {
-        setWifiApStateInternal(wifiManager, getWifiApConfigurationInternal(wifiManager), true);
+        setWifiApStateInternal(wifiManager, getHotspotConfiguration(wifiManager), true);
+    }
+
+    /**
+     * Helper method to enable hotspot.
+     * Goes with the modified {@link WifiConfiguration}.
+     */
+    public static void enableHotspot(WifiManager wifiManager, WifiConfiguration wifiConfiguration) {
+        setWifiApStateInternal(wifiManager, wifiConfiguration, true);
     }
 
     /**
      * Helper method to disable hotspot.
+     * Goes with default/pre-existing {@link WifiConfiguration}.
      */
     public static void disableHotspot(WifiManager wifiManager) {
-        setWifiApStateInternal(wifiManager, getWifiApConfigurationInternal(wifiManager), false);
+        setWifiApStateInternal(wifiManager, getHotspotConfiguration(wifiManager), false);
     }
 
     /**

@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.provider.Settings;
@@ -181,6 +182,45 @@ public final class HotspotManager implements IHotspotManager {
             } else {
                 Toast.makeText(context, "Unable to modify system settings", Toast.LENGTH_LONG).show();
             }
+        }
+    }
+
+    /**
+     * Returns the Wifi hotspot configuration.
+     *
+     * @param context The context.
+     * @return {@link WifiConfiguration} instance.
+     */
+    public WifiConfiguration getHotspotConfiguration(Context context) {
+        //Get the WifiManager instance, if NULL.
+        if (mWifiManager == null) {
+            mWifiManager = getWifiManager(context);
+        }
+
+        //Implementation for Lollipop, Marshmallow and Nougat.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+                && Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return HotspotHelper.getHotspotConfiguration(mWifiManager);
+        }
+        return null;
+    }
+
+    /**
+     * Sets the Wifi hotspot configuration.
+     *
+     * @param context           The context.
+     * @param wifiConfiguration {@link WifiConfiguration} instance.
+     */
+    public void setWifiConfiguration(Context context, WifiConfiguration wifiConfiguration) {
+        //Get the WifiManager instance, if NULL.
+        if (mWifiManager == null) {
+            mWifiManager = getWifiManager(context);
+        }
+
+        //Implementation for Lollipop, Marshmallow and Nougat.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+                && Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            HotspotHelper.setHotspotConfiguration(mWifiManager, wifiConfiguration);
         }
     }
 

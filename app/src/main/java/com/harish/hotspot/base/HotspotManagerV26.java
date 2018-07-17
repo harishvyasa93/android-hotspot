@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -29,11 +30,9 @@ import static com.harish.hotspot.base.receiver.HotspotReceiver.ACTION_HOTSPOT_ST
  */
 @RequiresApi(Build.VERSION_CODES.O)
 public final class HotspotManagerV26 implements IHotspotManager {
-    private static final String TAG = HotspotManagerV26.class.getSimpleName();
-
     //Constants.
     public static final int PERMISSION_LOCATION = 101;
-
+    private static final String TAG = HotspotManagerV26.class.getSimpleName();
     //Singleton instance.
     private static HotspotManagerV26 mInstance;
 
@@ -52,6 +51,13 @@ public final class HotspotManagerV26 implements IHotspotManager {
     //Required only for Oreo and above.
     //Obtained on trying to start hotspot and required to close if not required.
     private WifiManager.LocalOnlyHotspotReservation mHotSpotReservation;
+    //This callback si required, to obtain the HotspotReservation object.
+    private WifiManager.LocalOnlyHotspotCallback mCallback = new WifiManager.LocalOnlyHotspotCallback() {
+        @Override
+        public void onStarted(WifiManager.LocalOnlyHotspotReservation reservation) {
+            mHotSpotReservation = reservation;
+        }
+    };
 
     //Constructor.
     private HotspotManagerV26() {
@@ -152,7 +158,7 @@ public final class HotspotManagerV26 implements IHotspotManager {
                 && Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             HotspotHelper.enableHotspot(mWifiManager);
         }
-        //Implementation for Ore and above versions.
+        //Implementation for Oreo and above versions.
         else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             //Check for runtime permission.
             if (checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)) {
@@ -192,6 +198,36 @@ public final class HotspotManagerV26 implements IHotspotManager {
     }
 
     /**
+     * Returns the Wifi hotspot configuration.
+     *
+     * @param context The context.
+     * @return {@link WifiConfiguration} instance.
+     */
+    public WifiConfiguration getHotspotConfiguration(Context context) {
+        //Get the WifiManager instance, if NULL.
+        if (mWifiManager == null) {
+            mWifiManager = getWifiManager(context);
+        }
+
+        //Implementation for Lollipop, Marshmallow and Nougat.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+                && Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return HotspotHelper.getHotspotConfiguration(mWifiManager);
+        }
+        return null;
+    }
+
+    /**
+     * Sets the Wifi hotspot configuration.
+     *
+     * @param context           The context.
+     * @param wifiConfiguration {@link WifiConfiguration} instance.
+     */
+    public void setWifiConfiguration(Context context, WifiConfiguration wifiConfiguration) {
+
+    }
+
+    /**
      * Returns the {@link WifiManager} instance.
      *
      * @param context The context.
@@ -201,14 +237,6 @@ public final class HotspotManagerV26 implements IHotspotManager {
         return (WifiManager) context.getApplicationContext()
                 .getSystemService(Context.WIFI_SERVICE);
     }
-
-    //This callback si required, to obtain the HotspotReservation object.
-    private WifiManager.LocalOnlyHotspotCallback mCallback = new WifiManager.LocalOnlyHotspotCallback() {
-        @Override
-        public void onStarted(WifiManager.LocalOnlyHotspotReservation reservation) {
-            mHotSpotReservation = reservation;
-        }
-    };
 
     /**
      * Checks for runtime permission.
